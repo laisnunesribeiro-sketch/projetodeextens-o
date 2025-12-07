@@ -1,30 +1,31 @@
-CREATE DATABASE feedback_escolar;
-USE feedback_escolar;
+<?php
+// conexao.php
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "feedback_escolar";
 
-CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100),
-    email VARCHAR(100) UNIQUE,
-    senha VARCHAR(255),
-    tipo ENUM('aluno', 'professor', 'admin') DEFAULT 'aluno'
-);
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    die("Erro na conexão: " . $conn->connect_error);
+}
+?>
+<?php
+// cadastrar_usuario.php
+include 'conexao.php';
 
-CREATE TABLE feedbacks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT,
-    texto TEXT,
-    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    sentimento ENUM('positivo', 'negativo', 'neutro') DEFAULT 'neutro',
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
-);
+$nome = $_POST['nome'];
+$email = $_POST['email'];
+$senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+$tipo = $_POST['tipo'];
 
-CREATE TABLE respostas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_feedback INT,
-    id_professor INT,
-    resposta TEXT,
-    data_resposta DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_feedback) REFERENCES feedbacks(id),
-    FOREIGN KEY (id_professor) REFERENCES usuarios(id)
-);
+$sql = "INSERT INTO usuarios (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '$tipo')";
+if ($conn->query($sql) === TRUE) {
+    echo "Usuário cadastrado com sucesso!";
+} else {
+    echo "Erro: " . $conn->error;
+}
+$conn->close();
+?>
+
 
