@@ -26,4 +26,3 @@ CREATE TABLE respostas (
     data_resposta DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_feedback) REFERENCES feedbacks(id),
     FOREIGN KEY (id_professor) REFERENCES usuarios(id)
-);
